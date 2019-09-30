@@ -39,7 +39,7 @@ def LaserScanProcess(data):
     if average_gap < max_gap:
         angz = -0.5
     else:
-        LINX = 0.5
+        LINX = 2
         angz = Kp*(-1)*(90 - turn_angle)
 
 def main():
