@@ -1,0 +1,5 @@
+<launch>
+  <node name="" pkg="" type=".py"/>
+
+  <node type="rviz" name="rviz" pkg="rviz" />
+</launch>
