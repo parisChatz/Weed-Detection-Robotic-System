@@ -43,7 +43,7 @@ def LaserScanProcess(data):
         angz = Kp*(-1)*(90 - turn_angle)
 
 def main():
-    rospy.init_node('listener', anonymous=True)
+    rospy.init_node('laser_sensor', anonymous=True)
 
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
     rospy.Subscriber("scan", sensor_msgs.msg.LaserScan , LaserScanProcess)
