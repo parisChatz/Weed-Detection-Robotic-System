@@ -11,3 +11,6 @@ Pkg build: src my_ws/src then catkin_make
 ###Task 4
 scripts for robot programming module
 The laser_sensor script is from https://github.com/vibhuthasak/Obstacle_Avoidance_ROS
+
+### my rosnode
+wall_avoidance_node is in wall_avoidance_package
