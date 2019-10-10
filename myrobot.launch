@@ -1,5 +1,0 @@
-<launch>
-  <node name="laser_sensor" pkg="" type="laser_sensor.py"/>
-  <include file="$(find uol_cmp9767m_base)/put path and roslaunchfile find with rosls uol_cmp9767m_base" />
-  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find package_name)/rviz/config_file.rviz" />
-</launch>
