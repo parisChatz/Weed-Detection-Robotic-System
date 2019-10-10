@@ -14,3 +14,5 @@ The laser_sensor script is from https://github.com/vibhuthasak/Obstacle_Avoidanc
 
 ### my rosnode
 wall_avoidance_node is in wall_avoidance_package
+
+## Week 3
