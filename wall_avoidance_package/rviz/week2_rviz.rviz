@@ -5,8 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /RobotModel1
         - /RobotModel1/Status1
-        - /RobotModel2
       Splitter Ratio: 0.5
     Tree Height: 408
   - Class: rviz/Selection
@@ -27,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -285,228 +285,50 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
       Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        thorvald_002/base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        thorvald_002/bat0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/bat1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner0_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner0_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner1_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner1_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner2_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner2_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner3_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/corner3_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/hokuyo:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/kinect2_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        thorvald_002/kinect2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/kinect2_rgb_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        thorvald_002/leg0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/leg1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/leg2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/leg3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe0_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe0_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe1_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe1_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe2_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe2_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe3_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/pipe3_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/sprayer:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/top0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/top1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/top2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/top3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/velodyne:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/velodyne_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/wheel0_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/wheel1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/wheel2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thorvald_002/wheel3_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Name: RobotModel
-      Robot Description: thorvald_002/robot_description
-      TF Prefix: ""
-      Update Interval: 0
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 0
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.100000001
+      Style: Flat Squares
+      Topic: /thorvald_002/scan
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
-      Visual Enabled: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.100000001
+      Class: rviz/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.300000012
+      Head Radius: 0.300000012
+      Name: Pose
+      Shaft Length: 1
+      Shaft Radius: 0.200000003
+      Shape: Arrow
+      Topic: /object_pose
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -532,25 +354,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.4753227
+      Distance: 0.253671527
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -3.80706167
-        Y: -1.18023694
-        Z: 0.616864443
+        X: -10.4176302
+        Y: 14.8983078
+        Z: 9.11807632
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.584796548
+      Pitch: 0.439797163
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.7322104
+      Yaw: 2.24902225
     Saved: ~
 Window Geometry:
   Displays:
