@@ -3,7 +3,7 @@ import rospy
 import tf
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import PoseStamped
-from math import atan2, pi, cos, sin
+from math import sin
 
 
 class object_frame():
