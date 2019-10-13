@@ -21,13 +21,15 @@ class object_frame():
         (trans, rot) = self.listener.lookupTransform('thorvald_00' + self.robotnumber +
                                                      '/kinect2_depth_optical_frame', 'thorvald_00' + self.robotnumber + '/base_link', rospy.Time())
 
-    # def LaserScanProcess(self, data):
-        ranges = data.ranges
-        angle_increment = data.angle_increment
-        angle_min = data.angle_min
-        min_range = min(ranges)
-        i = ranges.index(min_range)
-        angle = angle_min + (i * angle_increment)
+        # ranges = data.ranges
+        # angle_increment = data.angle_increment
+        # angle_min = data.angle_min
+        # min_range = min(ranges)
+        # i = ranges.index(min_range)
+        # angle = angle_min + (i * angle_increment)
+
+        angle = data.angle_min + \
+            (data.ranges.index(min(data.ranges)) * data.angle_increment)
 
         p1 = PoseStamped()
         p1.header.frame_id = "thorvald_00" + self.robotnumber + "/base_link"
