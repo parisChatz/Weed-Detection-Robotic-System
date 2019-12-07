@@ -74,7 +74,7 @@ class image_converter:
             x,y,w,h = rectangle
             res2 = cv2.rectangle(res,(x,y),(x+w,y+h),(0,0,255),2)
 
-        imshow('res2', res2)
+        # imshow('res2', res2)
         
         self.publisher.publish(self.bridge.cv2_to_imgmsg(res2, "bgr8"))
         waitKey(1)
