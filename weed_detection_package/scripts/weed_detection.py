@@ -76,12 +76,12 @@ class image_converter:
             queue_size=10)
         
         self.posepub = rospy.Publisher("weed_pose",PoseStamped,queue_size=1)
-    
+
     def camera_info_callback(self, data):
         self.camera_model = image_geometry.PinholeCameraModel()
         self.camera_model.fromCameraInfo(data)
         self.camera_info_sub.unregister() #Only subscribe once
-
+    
     def callback(self, data):
         if not self.camera_model:
             return
@@ -137,7 +137,7 @@ class image_converter:
             res2 = cv_image2
 
         self.publish_points(middle_points)
-        # self.publish_contours(middle_points)
+        self.publish_contours(middle_points)
 
         self.greens_publisher.publish(self.bridge.cv2_to_imgmsg(res2, "bgr8"))
         cv2.waitKey(1)
@@ -154,7 +154,7 @@ class image_converter:
             v = point[1]    #y pixel
             #project a point in camera coordinates into the pixel coordinates
             uv = self.camera_model.projectPixelTo3dRay( self.camera_model.rectifyPoint((u,v)))
-            points_msg.points.append(Point32(uv[0]*0.5,uv[1]*0.5,0.5))
+            points_msg.points.append(Point32(uv[0]*0.493,uv[1]*0.493,0.493))
             
 
 
@@ -164,6 +164,8 @@ class image_converter:
         # print(points_msg.points)
         print 'Pixel in relation to map: ', tf_points.points
         print ''
+    
+
 
     def publish_contours(self, middle_points):
         for point in middle_points: #get weed pixels
@@ -171,13 +173,13 @@ class image_converter:
             v = point[1]    #y pixel
 
             #project a point in camera coordinates into the pixel coordinates
-            uv = self.camera_model.projectPixelTo3dRay( self.camera_model.rectifyPoint((u,v)))
+            uv = self.camera_model.projectPixelTo3dRay(self.camera_model.rectifyPoint((u,v)))
 
             point_msg = PoseStamped()
             point_msg.header.frame_id = self.camera_model.tfFrame()
-            point_msg.pose.position.x = uv[0] 
-            point_msg.pose.position.y = uv[1]
-            point_msg.pose.position.z = 0.5
+            point_msg.pose.position.x = uv[0]*0.493 
+            point_msg.pose.position.y = uv[1]*0.493
+            point_msg.pose.position.z = 0.493
             point_msg.pose.orientation.x = 0
             point_msg.pose.orientation.y = 0
             point_msg.pose.orientation.z = 0
@@ -200,16 +202,7 @@ class image_converter:
 if __name__ == '__main__':
     rospy.init_node('image_converter')
     ic = image_converter("thorvald_001")
-    movebase_client(6, -3.8, 90)
-    movebase_client(-6, -3.8, 90)
-    movebase_client(-6, -2.7, 0)
-    movebase_client(6, -2.7, 0)
-    movebase_client(6, -0.7, 90)
-    movebase_client(-6, -0.7, 90)
-    movebase_client(-6, 0.2, 0)
-    movebase_client(6, 0.2, 0)
-    movebase_client(6, 2.2, 90)
-    movebase_client(-6, 2.2, 90)
-    movebase_client(-6, 3.2, 0)
-    movebase_client(6, 3.2, 0)
+
     rospy.spin()
+
+#-4.985516 -0.037631
