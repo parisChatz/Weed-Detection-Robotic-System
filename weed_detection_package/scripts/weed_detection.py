@@ -196,48 +196,6 @@ class image_converter:
             print 'Pixel in relateion to map: ', tf_point_map.pose.position.x,tf_point_map.pose.position.y
             print ''
 
-            
-
-
-
-
-
-    # def publish_contours(self, middle_points):
-    #     for point in middle_points:
-    #         u = point[0]
-    #         v = point[1]
-    #         p = [u,v]
-
-            
-    #         time = rospy.Time()
-            
-    #         uv_rect = self.camera_model.rectifyPoint((u, v))
-    #         camera_point = self.camera_model.projectPixelTo3dRay(uv_rect)
-            # point_msg = geometry_msgs.msg.PoseStamped()
-            # point_msg.header.frame_id = self.camera_model.tfFrame()
-            # point_msg.pose.position.x = camera_point[0] 
-            # point_msg.pose.position.y = camera_point[1]
-            # # point_msg.pose.position.z = 1
-    #         point_msg.pose.orientation.w = 1
-    #         point_msg.header.stamp = time
-    #         # print("point_msg: ",point_msg.pose.position.x,point_msg.pose.position.y)
-            
-    #         (trans, rot) = self.tf_listener.lookupTransform(  'thorvald_001/kinect2_rgb_optical_frame','map', rospy.Time())
-    #         # print 'cam to base transform:', 'T ', trans, 'R ', rot
-
-    #         k = self.camera_model.intrinsicMatrix()
-    #         inv_k = np.linalg.inv(k)
-    #         r = np.dot(inv_k,p)
-    #         # print r,camera_point            
-    #         # self.posepub.publish(point_msg)
-    #         tf_point = self.camera_listener.transformPose('map', point_msg)
-    #         print('position of weed pose: ',tf_point)
-    #         # self.camera_listener.lookupTransform('thorvald_001/kinect2_rgb_optical_frame','/map', rospy.Time())
-    #         # # self.listener.lookupTransform(self.camera_model.tfFrame(), 'map', time)
-    #         # tf_point = self.camera_listener.transformPoint('/map', point_msg)
-    #         # print(tf_point.point.x,tf_point.point.y)
-    #         # self.contours_pub.publish(tf_point)
-        
     
 if __name__ == '__main__':
     rospy.init_node('image_converter')
