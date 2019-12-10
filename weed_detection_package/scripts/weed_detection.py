@@ -17,28 +17,7 @@ import actionlib
 # Ros Messages
 from sensor_msgs.msg import Image, CameraInfo, PointCloud
 from geometry_msgs.msg import Point32
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-
-
-def movebase_client(x, y, z):  # CHANGE TO TOPOLOGICAL NAVIGATION
-    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    client.wait_for_server()
-
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = "map"
-    goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = x
-    goal.target_pose.pose.position.y = y
-    goal.target_pose.pose.orientation.z = z
-    goal.target_pose.pose.orientation.w = 1.0
-
-    client.send_goal(goal)
-    wait = client.wait_for_result()
-    if not wait:
-        rospy.logerr("Action server not available!")
-        rospy.signal_shutdown("Action server not available!")
-    else:
-        return client.get_result()
+from topological_navigation.msg import GotoNodeActionGoal
 
 
 class image_converter:
@@ -51,6 +30,9 @@ class image_converter:
         self.tf_listener = tf.TransformListener()
         self.points_msg = PointCloud()
         self.bridge = CvBridge()
+        self.next_goal = "None"
+
+        self.waypoint_sub = rospy.Subscriber("/{}/topological_navigation/goal".format(self.robot),GotoNodeActionGoal, self.waypoint_callback)
 
         self.image_sub = rospy.Subscriber(
             "/{}/kinect2_camera/hd/image_color_rect".format(self.robot),
@@ -62,7 +44,7 @@ class image_converter:
             self.camera_info_callback)
 
         self.greens_publisher = rospy.Publisher(
-            '/camera_greens', Image, queue_size=10)
+            '/{}/camera_greens'.format(self.robot), Image, queue_size=10)
 
         self.complete_pointcloud_pub = rospy.Publisher(
             "/{}/weed/points/".format(self.robot),
@@ -79,6 +61,30 @@ class image_converter:
         self.camera_model.fromCameraInfo(data)
         self.camera_info_sub.unregister()  # Only subscribe once
 
+    def waypoint_callback(self,data):
+        self.next_goal = data.goal.target
+
+
+    def mask_function(self):
+
+        if self.next_goal == "WPline1_0" or self.next_goal == "WPline1_1" or self.next_goal == "WPline2_0" or self.next_goal == "WPline2_1":
+            lower_filter = np.array([30, 30, 0])
+            upper_filter = np.array([100, 90, 40])
+            return upper_filter, lower_filter
+
+        elif self.next_goal == "WPline3_0" or self.next_goal == "WPline3_1" or self.next_goal == "WPline4_0" or self.next_goal == "WPline4_1":
+            lower_filter = np.array([30, 30, 0])
+            upper_filter = np.array([100, 90, 40])
+            return upper_filter, lower_filter
+
+        elif self.next_goal == "WPline5_0" or self.next_goal == "WPline5_1" or self.next_goal == "WPline6_0" or self.next_goal == "WPline6_1":
+            lower_filter = np.array([0, 30, 30])
+            upper_filter = np.array([20, 140, 80]) 
+            return upper_filter, lower_filter
+        else:
+            return np.array([255,255,255]),np.array([255,255,255])
+        
+
     def detection_callback(self, data):
         if not self.camera_model:
             return
@@ -89,8 +95,10 @@ class image_converter:
 
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         hsv = cv2.blur(hsv, (40, 40))
-        lower_filter = np.array([30, 30, 0])
-        upper_filter = np.array([100, 90, 40])
+        
+        upper_filter, lower_filter = self.mask_function()
+        # lower_filter = np.array([30, 30, 0])
+        # upper_filter = np.array([100, 90, 40])
 
         mask = cv2.inRange(hsv, lower_filter, upper_filter)
         res = cv2.bitwise_and(cv_image, cv_image, mask=mask)
@@ -183,19 +191,6 @@ class image_converter:
 
 if __name__ == '__main__':
     rospy.init_node('image_converter')
-    ic = image_converter("thorvald_001")
-
-    movebase_client(6, -3.8, 90)
-    movebase_client(-6, -3.8, 90)
-    movebase_client(-6, -2.7, 0)
-    movebase_client(6, -2.7, 0)
-    movebase_client(6, -0.7, 90)
-    movebase_client(-6, -0.7, 90)
-    movebase_client(-6, 0.2, 0)
-    movebase_client(6, 0.2, 0)
-    movebase_client(6, 2.2, 90)
-    movebase_client(-6, 2.2, 90)
-    movebase_client(-6, 3.2, 0)
-    movebase_client(6, 3.2, 0)
-
+    image_converter("thorvald_001")
+    image_converter("thorvald_002")
     rospy.spin()
