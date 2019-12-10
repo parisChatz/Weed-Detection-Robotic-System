@@ -146,6 +146,7 @@ class image_converter:
         self.points_msg.header.frame_id = self.camera_model.tfFrame()
         self.points_msg.header.stamp = time
         for point in middle_points:
+            #get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
             if point[0] >= self.camera_model.fullResolution()[0]/2-20 and point[0] >= self.camera_model.fullResolution()[0]/2+20:
 
                 u = point[0]  # x pixel
