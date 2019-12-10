@@ -61,10 +61,6 @@ class image_converter:
             CameraInfo,
             self.camera_info_callback)
 
-        self.camera_info_sub = rospy.Subscriber(
-            '/{}/kinect2_camera/hd/camera_info'.format(self.robot),
-            CameraInfo, self.camera_info_callback)
-
         self.greens_publisher = rospy.Publisher(
             '/camera_greens', Image, queue_size=10)
 
@@ -93,8 +89,8 @@ class image_converter:
 
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         hsv = cv2.blur(hsv, (40, 40))
-        lower_filter = np.array([30, 30, 20])
-        upper_filter = np.array([100, 90, 45])
+        lower_filter = np.array([30, 30, 0])
+        upper_filter = np.array([100, 90, 40])
 
         mask = cv2.inRange(hsv, lower_filter, upper_filter)
         res = cv2.bitwise_and(cv_image, cv_image, mask=mask)
@@ -123,7 +119,7 @@ class image_converter:
                 overlapping_rectangles.append([x, y, w, h])
 
         overlapping_rectangles, weights = cv2.groupRectangles(
-            overlapping_rectangles, 1, 0.7)
+            overlapping_rectangles, 1, 0. 1)
 
         # Find middle points of weeds
         middle_points = []
