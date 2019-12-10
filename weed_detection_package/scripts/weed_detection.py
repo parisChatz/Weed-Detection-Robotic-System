@@ -119,7 +119,7 @@ class image_converter:
                 overlapping_rectangles.append([x, y, w, h])
 
         overlapping_rectangles, weights = cv2.groupRectangles(
-            overlapping_rectangles, 1, 0. 1)
+            overlapping_rectangles, 1, 0.1)
 
         # Find middle points of weeds
         middle_points = []
@@ -146,13 +146,15 @@ class image_converter:
         self.points_msg.header.frame_id = self.camera_model.tfFrame()
         self.points_msg.header.stamp = time
         for point in middle_points:
-            u = point[0]  # x pixel
-            v = point[1]  # y pixel
-            # project a point in camera coordinates into the pixel coordinates
-            uv = self.camera_model.projectPixelTo3dRay(
-                self.camera_model.rectifyPoint((u, v)))
-            self.points_msg.points.append(
-                Point32(uv[0] * 0.493, uv[1] * 0.493, 0.493))
+            if point[0] >= self.camera_model.fullResolution()[0]/2-20 and point[0] >= self.camera_model.fullResolution()[0]/2+20:
+
+                u = point[0]  # x pixel
+                v = point[1]  # y pixel
+                # project a point in camera coordinates into the pixel coordinates
+                uv = self.camera_model.projectPixelTo3dRay(
+                    self.camera_model.rectifyPoint((u, v)))
+                self.points_msg.points.append(
+                    Point32(uv[0] * 0.493, uv[1] * 0.493, 0.493))
 
         tf_points = self.camera_listener.transformPointCloud(
             'map', self.points_msg)
@@ -166,7 +168,7 @@ class image_converter:
                 dx = abs(point.x - keep.x)
                 dy = abs(point.y - keep.y)
                 dist = math.hypot(dx, dy)
-                if dist < 0.05:
+                if dist < 0.07:
                     found = True
 
             if not found:
