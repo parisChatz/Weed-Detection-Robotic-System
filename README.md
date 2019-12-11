@@ -1,7 +1,7 @@
 Robot programming
 ======
 
-##### This ros package was developed for the needs of the Robot Programming module CMP9767M at Lincoln University. The object of this project was to introduce the students to the environment of ros and ros packages as well as technics such as localisation, navigation, robot vision, coordination, handling tf transforms and mapping. The focus of this specific project was to create a rounded application that uses simple image processing technics to distinguish three different types of plants and detect harmful weeds near the plants. Moreover the navigation problem was solved using the ros topological navigation package. Finally, the simulation consists of two different robots, one robot identifies the bad weeds and the other robot scans the environment for the same harmfull weeds in order to spray them.
+This ros package was developed for the needs of the Robot Programming module CMP9767M at Lincoln University. The object of this project was to introduce the students to the environment of ros and ros packages as well as technics such as localisation, navigation, robot vision, coordination, handling tf transforms and mapping. The focus of this specific project was to create a rounded application that uses simple image processing technics to distinguish three different types of plants and detect harmful weeds near the plants. Moreover the navigation problem was solved using the ros topological navigation package. Finally, the simulation consists of two different robots, one robot identifies the bad weeds and the other robot scans the environment for the same harmfull weeds in order to spray them.
 
 ### Installation
 Before installing the package or any dependencies do `sudo apt update && sudo apt upgrade
