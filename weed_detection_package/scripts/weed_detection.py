@@ -18,7 +18,7 @@ import actionlib
 from sensor_msgs.msg import Image, CameraInfo, PointCloud
 from geometry_msgs.msg import Point32
 from topological_navigation.msg import GotoNodeActionGoal
-
+from std_msgs.msg import String, Bool
 
 class image_converter:
     camera_model = None
@@ -29,10 +29,14 @@ class image_converter:
         self.camera_listener = tf.listener.TransformListener()
         self.tf_listener = tf.TransformListener()
         self.points_msg = PointCloud()
-        self.bridge = CvBridge()
-        self.next_goal = "None"
+        self.complete_bool_msg = Bool()
 
-        self.waypoint_sub = rospy.Subscriber("/{}/topological_navigation/goal".format(self.robot),GotoNodeActionGoal, self.waypoint_callback)
+        self.current_filter_var = None
+        
+        self.bridge = CvBridge()
+        self.current_waypoint = None
+
+        self.waypoint_sub = rospy.Subscriber("/thorvald_001/current_node",String, self.waypoint_callback)
 
         self.image_sub = rospy.Subscriber(
             "/{}/kinect2_camera/hd/image_color_rect".format(self.robot),
@@ -56,30 +60,57 @@ class image_converter:
             PointCloud,
             queue_size=10)
 
+        #3 topic bool publishers for detection completion
+        self.first_row_completion_pub = rospy.Publisher("Line1_complete",Bool, queue_size=10)
+        self.second_row_completion_pub = rospy.Publisher("Line2_complete",Bool, queue_size=10)
+        self.third_row_completion_pub = rospy.Publisher("Line3_complete",Bool, queue_size=10)
+
     def camera_info_callback(self, data):
         self.camera_model = image_geometry.PinholeCameraModel()
         self.camera_model.fromCameraInfo(data)
         self.camera_info_sub.unregister()  # Only subscribe once
 
     def waypoint_callback(self,data):
-        self.next_goal = data.goal.target
+        self.current_waypoint = data
+
+        if self.current_waypoint.data == "WPline1_0":
+            self.current_filter_var = self.current_waypoint.data
+
+        if self.current_waypoint.data == "WPline3_0":
+            self.current_filter_var = self.current_waypoint.data
+
+        if self.current_waypoint.data == "WPline5_0":
+            self.current_filter_var = self.current_waypoint.data            
+
+        if self.current_waypoint.data == "WPline2_0":
+            self.complete_bool_msg.data = True
+            self.first_row_completion_pub.publish(self.complete_bool_msg)
+
+        if self.current_waypoint.data == "WPline4_0":
+            self.complete_bool_msg.data = True
+            self.second_row_completion_pub.publish(self.complete_bool_msg)
+
+        if self.current_waypoint.data == "WPline6_0":
+            self.complete_bool_msg.data = True
+            self.third_row_completion_pub.publish(self.complete_bool_msg)
 
 
     def mask_function(self):
+        print(self.current_waypoint)
+        if self.current_filter_var == "WPline1_0" :
 
-        if self.next_goal == "WPline1_0" or self.next_goal == "WPline1_1" or self.next_goal == "WPline2_0" or self.next_goal == "WPline2_1":
             lower_filter = np.array([30, 30, 0])
             upper_filter = np.array([100, 90, 40])
             return upper_filter, lower_filter
 
-        elif self.next_goal == "WPline3_0" or self.next_goal == "WPline3_1" or self.next_goal == "WPline4_0" or self.next_goal == "WPline4_1":
+        elif self.current_filter_var == "WPline3_0":
             lower_filter = np.array([30, 30, 0])
             upper_filter = np.array([100, 90, 40])
             return upper_filter, lower_filter
 
-        elif self.next_goal == "WPline5_0" or self.next_goal == "WPline5_1" or self.next_goal == "WPline6_0" or self.next_goal == "WPline6_1":
-            lower_filter = np.array([0, 30, 30])
-            upper_filter = np.array([20, 140, 80]) 
+        elif self.current_filter_var == "WPline5_0":
+            lower_filter = np.array([40, 90, 0])
+            upper_filter = np.array([100, 100, 200]) 
             return upper_filter, lower_filter
         else:
             return np.array([255,255,255]),np.array([255,255,255])
@@ -155,7 +186,7 @@ class image_converter:
         self.points_msg.header.stamp = time
         for point in middle_points:
             #get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
-            if point[0] >= self.camera_model.fullResolution()[0]/2-20 and point[0] >= self.camera_model.fullResolution()[0]/2+20:
+            if point[0] >= self.camera_model.fullResolution()[0]/2-2 and point[0] >= self.camera_model.fullResolution()[0]/2+2:
 
                 u = point[0]  # x pixel
                 v = point[1]  # y pixel
@@ -182,6 +213,8 @@ class image_converter:
 
             if not found:
                 self.pointcloud_list.append(point)
+        print(len(self.pointcloud_list))
+        
 
         self.points_msg.points = self.pointcloud_list
         self.points_msg.header.frame_id = 'map'
