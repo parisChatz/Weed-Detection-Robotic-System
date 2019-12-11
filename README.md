@@ -16,10 +16,10 @@ This package depends on the package CMP9767M forked from LCAS/CMP9767M. It is **
 ### Executing
 In order to run the complete simulation environment the following steps need to be followed.
 1. Create a folder named mongodb in your home directory
-2. roslaunch uol_cmp9767m_base thorvald-sim.launch
-3. roslaunch uol_cmp9767m_tutorial move_base_topo_nav.launch
-4. roslaunch uol_cmp9767m_tutorial topo_nav.launch
+2. `roslaunch uol_cmp9767m_base thorvald-sim.launch`
+3. `roslaunch uol_cmp9767m_tutorial move_base_topo_nav.launch`
+4. `roslaunch uol_cmp9767m_tutorial topo_nav.launch`
 You will see some warnings in the terminal where you launched topo_nav.launch saying the pointset is not found in the message_store. This is because we haven't loaded the topological map to the mongodb yet. Once you do the next step, that warning should stop.
-5. rosrun topological_utils load_yaml_map.py $(rospack find uol_cmp9767m_tutorial)/maps/test.yaml. *This step is required only once.*
-6. rviz -d $(rospack find uol_cmp9767m_tutorial)/config/topo_nav.rviz
-7. roslaunch weed_detection_package my_nodes_launch.launch
+5. `rosrun topological_utils load_yaml_map.py $(rospack find uol_cmp9767m_tutorial)/maps/test.yaml`. *This step is required only once.*
+6. `rviz -d $(rospack find uol_cmp9767m_tutorial)/config/topo_nav.rviz`
+7. `roslaunch weed_detection_package my_nodes_launch.launch`
