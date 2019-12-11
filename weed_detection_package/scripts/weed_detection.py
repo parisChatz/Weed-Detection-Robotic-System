@@ -105,12 +105,12 @@ class image_converter:
 
         elif self.current_filter_var == "WPline3_0":
             lower_filter = np.array([30, 30, 0])
-            upper_filter = np.array([100, 90, 40])
+            upper_filter = np.array([100, 90, 85])
             return upper_filter, lower_filter
 
         elif self.current_filter_var == "WPline5_0":
             lower_filter = np.array([40, 90, 0])
-            upper_filter = np.array([100, 100, 200]) 
+            upper_filter = np.array([100, 100, 200])
             return upper_filter, lower_filter
         else:
             return np.array([255,255,255]),np.array([255,255,255])
@@ -126,7 +126,7 @@ class image_converter:
 
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         hsv = cv2.blur(hsv, (40, 40))
-        
+
         upper_filter, lower_filter = self.mask_function()
         # lower_filter = np.array([30, 30, 0])
         # upper_filter = np.array([100, 90, 40])
@@ -186,7 +186,7 @@ class image_converter:
         self.points_msg.header.stamp = time
         for point in middle_points:
             #get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
-            if point[0] >= self.camera_model.fullResolution()[0]/2-2 and point[0] >= self.camera_model.fullResolution()[0]/2+2:
+            if point[0] >= self.camera_model.fullResolution()[0]/2-50 and point[0] <= self.camera_model.fullResolution()[0]/2+50:
 
                 u = point[0]  # x pixel
                 v = point[1]  # y pixel
