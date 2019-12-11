@@ -131,9 +131,17 @@ class move_robot():
         result = self.client.get_result()
         rospy.loginfo("status for %s is %s", status, self.goal.target)
         rospy.loginfo("result is %s", result)
+
+        self.goal.target = "WPinit2"
+        self.client.send_goal(self.goal)
+        status = self.client.wait_for_result() 
+        result = self.client.get_result()
+        rospy.loginfo("status for %s is %s", status, self.goal.target)
+        rospy.loginfo("result is %s", result)
+
         
 if __name__ == '__main__':
     rospy.init_node('topological_navigation_client')
-    move_robot("thorvald_001").move_manuvers()
+    move_robot("thorvald_002").move_manuvers()
 
     

@@ -20,6 +20,7 @@ from geometry_msgs.msg import Point32
 from topological_navigation.msg import GotoNodeActionGoal
 from std_msgs.msg import String, Bool
 
+
 class image_converter:
     camera_model = None
 
@@ -30,13 +31,14 @@ class image_converter:
         self.tf_listener = tf.TransformListener()
         self.points_msg = PointCloud()
         self.complete_bool_msg = Bool()
-
+        self.close_waypoints = []
         self.current_filter_var = None
-        
+
         self.bridge = CvBridge()
         self.current_waypoint = None
 
-        self.waypoint_sub = rospy.Subscriber("/thorvald_001/current_node",String, self.waypoint_callback)
+        self.waypoint_sub = rospy.Subscriber(
+            "/{}/current_node".format(self.robot), String, self.waypoint_callback)
 
         self.image_sub = rospy.Subscriber(
             "/{}/kinect2_camera/hd/image_color_rect".format(self.robot),
@@ -60,17 +62,20 @@ class image_converter:
             PointCloud,
             queue_size=10)
 
-        #3 topic bool publishers for detection completion
-        self.first_row_completion_pub = rospy.Publisher("Line1_complete",Bool, queue_size=10)
-        self.second_row_completion_pub = rospy.Publisher("Line2_complete",Bool, queue_size=10)
-        self.third_row_completion_pub = rospy.Publisher("Line3_complete",Bool, queue_size=10)
+        # 3 topic bool publishers for detection completion
+        self.first_row_completion_pub = rospy.Publisher(
+            "Line1_complete", Bool, queue_size=10)
+        self.second_row_completion_pub = rospy.Publisher(
+            "Line2_complete", Bool, queue_size=10)
+        self.third_row_completion_pub = rospy.Publisher(
+            "Line3_complete", Bool, queue_size=10)
 
     def camera_info_callback(self, data):
         self.camera_model = image_geometry.PinholeCameraModel()
         self.camera_model.fromCameraInfo(data)
         self.camera_info_sub.unregister()  # Only subscribe once
 
-    def waypoint_callback(self,data):
+    def waypoint_callback(self, data):
         self.current_waypoint = data
 
         if self.current_waypoint.data == "WPline1_0":
@@ -80,7 +85,7 @@ class image_converter:
             self.current_filter_var = self.current_waypoint.data
 
         if self.current_waypoint.data == "WPline5_0":
-            self.current_filter_var = self.current_waypoint.data            
+            self.current_filter_var = self.current_waypoint.data
 
         if self.current_waypoint.data == "WPline2_0":
             self.complete_bool_msg.data = True
@@ -94,10 +99,9 @@ class image_converter:
             self.complete_bool_msg.data = True
             self.third_row_completion_pub.publish(self.complete_bool_msg)
 
-
     def mask_function(self):
-        print(self.current_waypoint)
-        if self.current_filter_var == "WPline1_0" :
+        # print(self.current_waypoint)
+        if self.current_filter_var == "WPline1_0":
 
             lower_filter = np.array([30, 30, 0])
             upper_filter = np.array([100, 90, 40])
@@ -113,8 +117,7 @@ class image_converter:
             upper_filter = np.array([100, 100, 200])
             return upper_filter, lower_filter
         else:
-            return np.array([255,255,255]),np.array([255,255,255])
-        
+            return np.array([255, 255, 255]), np.array([255, 255, 255])
 
     def detection_callback(self, data):
         if not self.camera_model:
@@ -185,8 +188,8 @@ class image_converter:
         self.points_msg.header.frame_id = self.camera_model.tfFrame()
         self.points_msg.header.stamp = time
         for point in middle_points:
-            #get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
-            if point[0] >= self.camera_model.fullResolution()[0]/2-50 and point[0] <= self.camera_model.fullResolution()[0]/2+50:
+            # get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
+            if point[0] >= self.camera_model.fullResolution()[0] / 2 - 50 and point[0] <= self.camera_model.fullResolution()[0] / 2 + 50:
 
                 u = point[0]  # x pixel
                 v = point[1]  # y pixel
@@ -213,9 +216,6 @@ class image_converter:
 
             if not found:
                 self.pointcloud_list.append(point)
-        print(len(self.pointcloud_list))
-        
-
         self.points_msg.points = self.pointcloud_list
         self.points_msg.header.frame_id = 'map'
         self.points_msg.header.stamp = rospy.Time()
@@ -224,6 +224,6 @@ class image_converter:
 
 if __name__ == '__main__':
     rospy.init_node('image_converter')
-    image_converter("thorvald_001")
     image_converter("thorvald_002")
+    image_converter("thorvald_001")
     rospy.spin()

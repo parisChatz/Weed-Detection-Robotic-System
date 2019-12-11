@@ -1,96 +1,107 @@
 #!/usr/bin/env python
-
-# Python libs
-import sys
-import math
-
 # Ros libraries
 import rospy
 import tf
-import rosservice
-
 
 # Ros Messages
 from std_srvs.srv import Empty
+from std_msgs.msg import Bool, String
 from sensor_msgs.msg import PointCloud
 from nav_msgs.msg import Odometry
 
+import rospy
+import actionlib
+from actionlib_msgs.msg import GoalStatusArray
+from sensor_msgs.msg import CameraInfo, PointCloud
+
+from topological_navigation.msg import GotoNodeAction, GotoNodeGoal
 
 
-class sprayerClass():
+class NavigateClass():
 
     def __init__(self, robot):
         self.robot = robot
-        self.sprayedlist = []
-        self.sprayer = rospy.ServiceProxy("thorvald_001/spray", Empty)
+        self.safe_nodes = ["WPline5_0", "WPline3_0", "WPline1_0"]
+        self.danger_nodes = ["WPline6_0", "WPline4_0", "WPline2_0"]
+        self.other_nodes = ["WPline5_1", "WPline3_1",
+                            "WPline1_1", "WPline6_1", "WPline4_1", "WPline2_1"]
+        self.ocupied = {"Line1": False, "Line2": False, "Line3": False}
+        self.done = {"Line1": False, "Line2": False, "Line3": False}
+        self.client = actionlib.SimpleActionClient(
+            '/{}/topological_navigation'.format(self.robot), GotoNodeAction)
+        self.iddle_robots = {"thorvald_001": False, "thorvald_002": False}
+        self.client.wait_for_server()
+        self.goal = GotoNodeGoal()
 
-        rospy.Subscriber("/{}/complete_weed_pointcloud/".format(self.robot),PointCloud,
-                         self.spray_callback)
+        self.sprayer = rospy.ServiceProxy('thorvald_002/spray', Empty)
 
-        self.sprayed_points_pub = rospy.Publisher(
-            "/weed/sprayedpoints/{}".format(self.robot),
-            PointCloud,
-            queue_size=5)
+        self.choose_line_sub = rospy.Subscriber(
+            "/{}/current_node".format(self.robot), String, self.choose_line_callback)
 
-        self.detected_not_sprayed_pub = rospy.Publisher(
-            "/{}/detected_not_sprayed_points/".format(self.robot),
-            PointCloud,
-            queue_size=5)
+        self.line1sub = rospy.Subscriber(
+            "/Line1_complete", Bool, self.line1callback)
+        self.line2sub = rospy.Subscriber(
+            "/Line2_complete", Bool, self.line2callback)
+        self.line3sub = rospy.Subscriber(
+            "/Line3_complete", Bool, self.line3callback)
 
-        self.points_msg = PointCloud()
+        self.current_robot_node1 = rospy.Subscriber(
+            "/thorvald_001/current_node", String, self.robot1positioncallback)
+        self.current_robot_node2 = rospy.Subscriber(
+            "/thorvald_002/current_node", String, self.robot2positioncallback)
 
-        self.tflistener = tf.listener.TransformListener()
+        self.iddle_robot1 = rospy.Subscriber(
+            "/thorvald_001/topological_navigation/status", GoalStatusArray, self.iddle1positioncallback)
 
-    def publish_allpoints(self):
-        time = rospy.Time(0)
-        self.points_msg.points = self.keeplist
-        self.points_msg.header.frame_id = 'map'
-        self.points_msg.header.stamp = time
+        self.iddle_robot2 = rospy.Subscriber(
+            "/thorvald_002/topological_navigation/status", GoalStatusArray, self.iddle2positioncallback)
 
-        self.points_pub.publish(self.points_msg)
+    def iddle1positioncallback(self, data):
+        if len(data.status_list) != 0:
+            self.iddle_robots["thorvald_001"] = True
+        else:
+            self.iddle_robots["thorvald_001"] = False
 
-    def spray_callback(self, data):
-        try:
-            trans, rot = self.tflistener.lookupTransform(
-                'map',
-                '{}/sprayer'.format(self.robot),
-                data.header.stamp)
-        except Exception:
-            return
-    
-        newkeep = []
-        shouldSpray = False
-        for point in data.points:
+    def iddle2positioncallback(self, data):
+        if len(data.status_list) != 0:
+            self.iddle_robots["thorvald_002"] = True
+        else:
+            self.iddle_robots["thorvald_002"] = False
 
-            dx = abs(point.x - trans[0])
-            dy = abs(point.y - trans[1])
-            dist = math.hypot(dx, dy)
-            if dx <0.6 and dy < 0.1:
-                if point not in self.sprayedlist:
-                    print(point, trans)
-                    print(dx, dy)
-                    print('spray')
-                    self.sprayedlist.append(point)
-                    self.sprayer()
+    def robot1positioncallback(self, data):
+        self.robot1position = data.data
+        self.robot1name = "/thorvald_001/"
 
-        time = rospy.Time(0)
-        self.points_msg.points = self.sprayedlist
-        self.points_msg.header.frame_id = "map"
-        self.points_msg.header.stamp = time
-        self.detected_not_sprayed_pub.publish(self.points_msg)
+    def robot2positioncallback(self, data):
+        self.robot2position = data.data
+        self.robot2name = "/thorvald_002/"
 
+    def line1callback(self, data):
+        if data.data in self.safe_nodes:
+            self.done["Line1"] = True
 
+    def line2callback(self, data):
+        if data.data in self.safe_nodes:
+            self.done["Line2"] = True
 
-def main(args):
-    '''Initializes and cleanup ros node'''
-    rospy.init_node('weed_spray', anonymous=True)
-    sprayerClass('thorvald_002')
+    def line3callback(self, data):
+        if data.data in self.safe_nodes:
+            self.done["Line3"] = True
 
-    try:
-        rospy.spin()
-    except KeyboardInterrupt:
-        print "Shutting down"
-
+    def choose_line_callback(self, data):
+        if data.data in self.safe_nodes:
+            if data.data == self.safe_nodes[2]:
+                self.done["Line1"] = True
+            if data.data == self.safe_nodes[1]:
+                self.done["Line2"] = True
+            if data.data == self.safe_nodes[0]:
+                self.done["Line3"] = True
+            for line, status in self.done.items():
+                print(line,status,self.iddle_robots)
+                if status is False:
+                    print(status)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    rospy.init_node('navig_and_spray', anonymous=True)
+    NavigateClass("thorvald_001")
+    rospy.spin()
