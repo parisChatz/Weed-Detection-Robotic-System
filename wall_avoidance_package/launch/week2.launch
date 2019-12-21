@@ -1,8 +1,0 @@
-<launch>
-	
-	<include file="$(find uol_cmp9767m_base)/launch/thorvald-sim.launch"/>
-	<node name="wall_avoidance_node" pkg="wall_avoidance_package" type="wall_avoidance_node.py"/>
-	<node name="closest_object_pose_node" pkg="wall_avoidance_package" type="closest_object_pose_node.py"/>
-	<node type="rviz" name="rviz" pkg="rviz" args="-d $(find wall_avoidance_package)/rviz/dual_bot_with_near_object_pose.rviz" />
-	
-</launch>
