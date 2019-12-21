@@ -1,0 +1,9 @@
+<launch> 
+
+	<include file="$(find uol_cmp9767m_base)/launch/thorvald-sim.launch"/>
+	<include file="$(find uol_cmp9767m_tutorial)/launch/move_base_topo_nav.launch"/>
+	<include file="$(find uol_cmp9767m_tutorial)/launch/topo_nav.launch"/>
+
+	<node type="rviz" name="rviz" pkg="rviz" args="-d $(find uol_cmp9767m_tutorial)/config/topo_nav.rviz" />
+	
+</launch>

@@ -12,12 +12,10 @@ from cv_bridge import CvBridge
 import rospy
 import image_geometry
 import tf
-import actionlib
 
 # Ros Messages
 from sensor_msgs.msg import Image, CameraInfo, PointCloud
 from geometry_msgs.msg import Point32
-from topological_navigation.msg import GotoNodeActionGoal
 from std_msgs.msg import String, Bool
 
 
@@ -100,11 +98,11 @@ class image_converter:
             self.third_row_completion_pub.publish(self.complete_bool_msg)
 
     def mask_function(self):
-        # print(self.current_waypoint)
+        print(self.current_waypoint)
         if self.current_filter_var == "WPline1_0":
-
             lower_filter = np.array([30, 30, 0])
-            upper_filter = np.array([100, 90, 40])
+            upper_filter = np.array([100, 90, 85])
+            # upper_filter = np.array([100, 90, 40])
             return upper_filter, lower_filter
 
         elif self.current_filter_var == "WPline3_0":
@@ -117,7 +115,7 @@ class image_converter:
             upper_filter = np.array([100, 100, 200])
             return upper_filter, lower_filter
         else:
-            return np.array([255, 255, 255]), np.array([255, 255, 255])
+            return np.array([0, 0, 0]), np.array([0, 0, 0])
 
     def detection_callback(self, data):
         if not self.camera_model:
@@ -131,8 +129,6 @@ class image_converter:
         hsv = cv2.blur(hsv, (40, 40))
 
         upper_filter, lower_filter = self.mask_function()
-        # lower_filter = np.array([30, 30, 0])
-        # upper_filter = np.array([100, 90, 40])
 
         mask = cv2.inRange(hsv, lower_filter, upper_filter)
         res = cv2.bitwise_and(cv_image, cv_image, mask=mask)
@@ -148,7 +144,7 @@ class image_converter:
         cv2.drawContours(res, contours, -1, (0, 255, 0), 1)
 
         # Filter small detections
-        threshold_area = 400
+        threshold_area = 300
         overlapping_rectangles = []
         for cnt in contours:
             area = cv2.contourArea(cnt)
@@ -188,16 +184,20 @@ class image_converter:
         self.points_msg.header.frame_id = self.camera_model.tfFrame()
         self.points_msg.header.stamp = time
         for point in middle_points:
-            # get the resolution of the camera and only add the points in the middle of the camera -+20 pixels
-            if point[0] >= self.camera_model.fullResolution()[0] / 2 - 50 and point[0] <= self.camera_model.fullResolution()[0] / 2 + 50:
+            # get the resolution of the camera and only add the
+            # points in the middle of the camera -+20 pixels
+            # ONLY DO THIS IN A GOOD COMPUTER, IF RUNNING ON LAPTOP
+            # COMMENT THE FOLLOWING IF CONDITION
+            # if point[0] >= self.camera_model.fullResolution()[0] / 2 - 100 and point[0] <= self.camera_model.fullResolution()[0] / 2 + 100:
 
-                u = point[0]  # x pixel
-                v = point[1]  # y pixel
-                # project a point in camera coordinates into the pixel coordinates
-                uv = self.camera_model.projectPixelTo3dRay(
-                    self.camera_model.rectifyPoint((u, v)))
-                self.points_msg.points.append(
-                    Point32(uv[0] * 0.493, uv[1] * 0.493, 0.493))
+            u = point[0]  # x pixel
+            v = point[1]  # y pixel
+
+            # project a point in camera coordinates into the pixel coordinates
+            uv = self.camera_model.projectPixelTo3dRay(
+                self.camera_model.rectifyPoint((u, v)))
+            self.points_msg.points.append(
+                Point32(uv[0] * 0.493, uv[1] * 0.493, 0.493))
 
         tf_points = self.camera_listener.transformPointCloud(
             'map', self.points_msg)
@@ -225,5 +225,5 @@ class image_converter:
 if __name__ == '__main__':
     rospy.init_node('image_converter')
     image_converter("thorvald_002")
-    image_converter("thorvald_001")
+    # image_converter("thorvald_001")
     rospy.spin()
