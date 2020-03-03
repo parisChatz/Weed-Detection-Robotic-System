@@ -12,7 +12,7 @@ class move_robot():
             '/{}/topological_navigation'.format(self.robotname), GotoNodeAction)
         self.client.wait_for_server()
         self.goal = GotoNodeGoal()
-        self.goal.no_orientation = 1
+        self.goal.no_orientation = 0
 
     def move_manuvers(self):
 
@@ -51,13 +51,6 @@ class move_robot():
         rospy.loginfo("status for %s is %s", status, self.goal.target)
         rospy.loginfo("result is %s", result)
 
-        self.goal.target = "WPstart"
-        self.client.send_goal(self.goal)
-        status = self.client.wait_for_result()
-        result = self.client.get_result()
-        rospy.loginfo("status for %s is %s", status, self.goal.target)
-        rospy.loginfo("result is %s", result)
-
         self.goal.target = "WPline3_0"
         self.client.send_goal(self.goal)
         status = self.client.wait_for_result()
@@ -84,13 +77,6 @@ class move_robot():
         status = self.client.wait_for_result()
         result = self.client.get_result()
         rospy.loginfo("status for %s is %s", status, self.goal.target)
-        rospy.loginfo("result is %s", result)
-
-        self.goal.target = "WPstart"
-        self.client.send_goal(self.goal)
-        status = self.client.wait_for_result()
-        result = self.client.get_result()
-        rospy.loginfo("status is %s for %s", status, self.goal.target)
         rospy.loginfo("result is %s", result)
 
         self.goal.target = "WPline5_0"
@@ -121,14 +107,7 @@ class move_robot():
         rospy.loginfo("status for %s is %s", status, self.goal.target)
         rospy.loginfo("result is %s", result)
 
-        self.goal.target = "WPstart"
-        self.client.send_goal(self.goal)
-        status = self.client.wait_for_result()
-        result = self.client.get_result()
-        rospy.loginfo("status for %s is %s", status, self.goal.target)
-        rospy.loginfo("result is %s", result)
-
-        self.goal.target = "WPinit2"
+        self.goal.target = "WPinit1"
         self.client.send_goal(self.goal)
         status = self.client.wait_for_result()
         result = self.client.get_result()

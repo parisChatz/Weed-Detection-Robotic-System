@@ -19,7 +19,7 @@ class Sprayer():
 
         self.last_spray_pos = 0
         self.y_previous = 0
-        self.radius = 0.5  # killbox radius
+        self.radius = 0.3  # killbox radius
 
         self.spray_srv = rospy.ServiceProxy(
             "{}/dynamic_sprayer".format(self.robot),
@@ -52,6 +52,7 @@ class Sprayer():
 
     def spray_weed_callback(self, data):
         time = rospy.Time(0)
+        all_points = data.points
         # Get the sprayer position in the map coordinates
         try:
             trans, rot = self.tflistener.lookupTransform(
@@ -71,7 +72,7 @@ class Sprayer():
             if abs(trans[1] - point.y) < 0.5:
                 # pos of robot
                 x_sprayer = trans[0]
-                current_y_sprayer = trans[1] + self.y_previous
+                current_y_sprayer = trans[1] 
 
                 # Difference in 'x' and 'y' frame
                 dx = abs(x_sprayer - point.x)
@@ -80,9 +81,9 @@ class Sprayer():
                 dy = current_y_sprayer - point.y
 
                 # When sprayer moves, sleep for travel time
-                # slep(dy)
+                # self.slep(dy)
 
-                if dx < self.radius:  # Same as killbox radius
+                if dx < 0.05:
                     if point not in self.sprayed:
 
                         new_point = PointStamped()
@@ -119,6 +120,16 @@ class Sprayer():
 
                         # Save point for visualisation
                         self.real_sprayed.append(real_point)
+
+                        # add point in sprayed array
+                        self.sprayed.append(real_point)
+
+
+            # Publish the Sprayed Points in RVIZ
+            self.sprayed_points_indirect_msg.points = self.real_sprayed2
+            self.sprayed_points_indirect_msg.header.frame_id = 'map'
+            self.sprayed_points_indirect_msg.header.stamp = time
+            self.sprayed_points_indirect_pub.publish(self.sprayed_points_indirect_msg)
 
             self.sprayed_points_msg.points = self.real_sprayed
             self.sprayed_points_msg.header.frame_id = 'map'

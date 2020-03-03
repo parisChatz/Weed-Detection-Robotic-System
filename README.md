@@ -17,6 +17,7 @@ Ubuntu 16.04 and ROS kinetic were used for this project.
 A step by step series of examples that tell you how to get a development environment running.
 
 First of all, it is assumed that ROS kinetic is correctly installed. If not please follow the [instructions](http://wiki.ros.org/ROS/Installation) for installing ROS kinetic.
+To setup the environment:
 
 1. Open a new terminal and do ```sudo apt update && sudo apt upgrade```.
 2. Create a new catkin workspace, navigate inside the workspace, create a src folder and clone the repository inside the src folder (e.g.`mkdir -p catkin_ws/src && git clone https://github.com/parisChatz/Weed-Detection-Robotic-System.git catkin_ws/src/`)
@@ -28,16 +29,19 @@ Finally, open a new terminal, source the workspace `source catkin_ws/devel/setup
 
 If any package is missing do ```sudo apt install ros-<distro>-<missing_dep>```.
 
+To setup topological navigation:
+1. Create a folder named mongodb in your home directory `mkdir mongodb`.
+
+
 ### Executing
 In order to run the complete simulation environment the following steps need to be followed.
-1. Create a folder named mongodb in your home directory `mkdir mongodb`.
-2. `roslaunch uol_cmp9767m_base thorvald-sim.launch`
-3. `roslaunch uol_cmp9767m_tutorial move_base_topo_nav.launch`
-4. `roslaunch uol_cmp9767m_tutorial topo_nav.launch`
+1. `roslaunch uol_cmp9767m_base thorvald-sim.launch`
+2. `roslaunch uol_cmp9767m_tutorial move_base_topo_nav.launch`
+3. `roslaunch uol_cmp9767m_tutorial topo_nav.launch`
 You will see some warnings in the terminal where you launched topo_nav.launch saying the pointset is not found in the message_store. This is because we haven't loaded the topological map to the mongodb yet. Once you do the next step, that warning should stop.
-5. `rosrun topological_utils load_yaml_map.py $(rospack find uol_cmp9767m_tutorial)/maps/test.yaml`. *This step is required only once.*
-6. `rviz -d $(rospack find uol_cmp9767m_tutorial)/config/topo_nav.rviz`
-7. `roslaunch weed_detection_package my_nodes_launch.launch`
+4. `rosrun topological_utils load_yaml_map.py $(rospack find uol_cmp9767m_tutorial)/maps/test.yaml`. *This step is required only once.*
+5. `rviz -d $(rospack find uol_cmp9767m_tutorial)/config/topo_nav.rviz`
+6. `roslaunch weed_detection_package my_nodes_launch.launch`
 
 
 ## Built With
