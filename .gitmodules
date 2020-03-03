@@ -1,0 +1,3 @@
+[submodule "CMP9767M"]
+	path = CMP9767M
+	url = https://github.com/parisChatz/CMP9767M.git
