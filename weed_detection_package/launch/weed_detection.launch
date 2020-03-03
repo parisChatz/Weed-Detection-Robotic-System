@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<launch> 
+	<node name="thorvald_move_detect_robot" pkg="weed_detection_package" type="detection_robot_topo_nav.py"/>
+	<node name="thorvald_detect" pkg="weed_detection_package" type="weed_detection.py"/>
+</launch>

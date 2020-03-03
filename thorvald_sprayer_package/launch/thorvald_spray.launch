@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<launch>
+	<node name="thorvald_move_sprayer_robot" pkg="thorvald_sprayer_package" type="ros_move_sprayer.py"/>
+	<node name="thorvald_spray" pkg="thorvald_sprayer_package" type="ros_spray.py"/>
+</launch>
