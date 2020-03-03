@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+	<include file="$(find uol_cmp9767m_tutorial)/launch/move_base.launch"/>
+	<node name="thorvald_move" pkg="thorvald_detect_and_move_package" type="ros_move_detector.py"/> <!---->
+	<node name="ros_readimg" pkg="thorvald_detect_and_move_package" type="ros_readimg.py"/>
+	<node name="ros_getpoints" pkg="thorvald_detect_and_move_package" type="ros_getpoints.py"/>
+	
+</launch>
