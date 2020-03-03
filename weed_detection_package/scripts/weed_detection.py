@@ -224,6 +224,6 @@ class image_converter:
 
 if __name__ == '__main__':
     rospy.init_node('image_converter')
-    image_converter("thorvald_002")
+    image_converter("thorvald_001")
     # image_converter("thorvald_001")
     rospy.spin()

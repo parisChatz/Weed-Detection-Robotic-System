@@ -19,7 +19,7 @@ A step by step series of examples that tell you how to get a development environ
 First of all, it is assumed that ROS kinetic is correctly installed. If not please follow the [instructions](http://wiki.ros.org/ROS/Installation) for installing ROS kinetic.
 
 1. Open a new terminal and do ```sudo apt update && sudo apt upgrade```.
-2. Create a new catkin workspace, navigate inside the workspace, create a src folder and clone the repository inside the src folder (e.g.`mkdir catkin_ws && cd catkin_ws && mkdir src && cd src && git clone https://github.com/parisChatz/Weed-Detection-Robotic-System.git`)
+2. Create a new catkin workspace, navigate inside the workspace, create a src folder and clone the repository inside the src folder (e.g.`mkdir -p catkin_ws/src && git clone https://github.com/parisChatz/Weed-Detection-Robotic-System.git catkin_ws/src/`)
 3. Navigate to the base of the catkin_ws (e.g. catkin_ws)
 4. In the terminal do `catkin_make`.
 5. Every dependency will be inside the package.xml file. Go to the top directory of your catkin workspace (e.g. `cd catkin_ws`). Then run: ```rosdep install --from-paths src --ignore-src -r -y```.
@@ -30,7 +30,7 @@ If any package is missing do ```sudo apt install ros-<distro>-<missing_dep>```.
 
 ### Executing
 In order to run the complete simulation environment the following steps need to be followed.
-1. Create a folder named mongodb in your home directory
+1. Create a folder named mongodb in your home directory `mkdir mongodb`.
 2. `roslaunch uol_cmp9767m_base thorvald-sim.launch`
 3. `roslaunch uol_cmp9767m_tutorial move_base_topo_nav.launch`
 4. `roslaunch uol_cmp9767m_tutorial topo_nav.launch`

@@ -1,4 +1,0 @@
-<launch> 
-	<node name="weed_detection" pkg="weed_detection_package" type="weed_detection.py"/>
-	<node name="detection_robot_topo_nav" pkg="robot_topo_move_package" type="detection_robot_topo_nav.py"/>
-</launch>
